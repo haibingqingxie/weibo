@@ -5,6 +5,9 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Support\Facades\Auth;
 
+/**
+中間件處理已登録授權跳轉
+**/
 class RedirectIfAuthenticated
 {
     /**
@@ -18,7 +21,9 @@ class RedirectIfAuthenticated
     public function handle($request, Closure $next, $guard = null)
     {
         if (Auth::guard($guard)->check()) {
-            return redirect('/home');
+            $message = $request->is('signup') ? '您已註冊並且登録' : '您已登录，无需再次操作。';
+            session()->flash('info', $message);
+            return redirect('/');
         }
 
         return $next($request);
