@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 
+use Auth;
 use Mail;
 /**
  * 用戶操作curd
@@ -129,6 +130,7 @@ class UsersController extends Controller
 
         $user->activated = true;
         $user->activation_token = null;
+        $user->email_verified_at = now();
         $user->save();
 
         Auth::login($user);
