@@ -7,22 +7,25 @@ use Illuminate\Http\Request;
 use Auth;
 
 /**
- * 登録與退出登録
+ * 登录与退出登录
  */
 class SessionController extends Controller
 {
     public function __construct()
     {
+        // 未登录用户只允许登录
         $this->middleware('guest', [
             'only' => ['create']
         ]);
     }
 
+    // 登录页面
     public function create()
     {
         return view('sessions.create');
     }
 
+    // 登录action
     public function store(Request $request)
     {
         $credentials = $this->validate($request, [
@@ -32,7 +35,7 @@ class SessionController extends Controller
 
         if(Auth::attempt($credentials, $request->has('remember'))) {
             session()->flash('success', '欢迎回来！');
-            $fallback = route('users.show', [Auth::user()]);
+            $fallback = route('users.show', Auth::user());
             return redirect()->intended($fallback);
         } else {
             session()->flash('danger', '很抱歉，您的邮箱和密码不匹配');
@@ -40,6 +43,7 @@ class SessionController extends Controller
         }
     }
 
+    // 退出登录
     public function destroy()
     {
         Auth::logout();

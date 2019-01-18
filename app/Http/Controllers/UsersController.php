@@ -14,25 +14,35 @@ class UsersController extends Controller
     {
         // 除了show/create/store方法，其他方法都要授权
         $this->middleware('auth', [
-            'except' => ['show', 'create', 'store']
+            'except' => ['show', 'create', 'store', 'index']
         ]);
 
-        // 只有未登录用户才能注册
+        // 未登录用户只允许注册
         $this->middleware('guest', [
             'only' => ['create']
         ]);
     }
 
+    // 用户列表页面
+    public function index()
+    {
+        $users = User::all();
+        return view('users.index', compact('users'));
+    }
+
+    // 用户注册页面
     public function create()
     {
         return view('users.create');
     }
 
+    // 用户详情页面
     public function show(User $user)
     {
         return view('users.show', compact('user'));
     }
 
+    // 注册action
     public function store(Request $request)
     {
         $this->validate($request, [
@@ -52,12 +62,14 @@ class UsersController extends Controller
         return redirect()->route('users.show', [$user]);
     }
 
+    // 用户编辑页面
     public function edit(User $user)
     {
         $this->authorize('update', $user);
         return view('users.edit', compact('user'));
     }
 
+    // 编辑action
     public function update(User $user, Request $request)
     {
         $this->authorize('update', $user);
