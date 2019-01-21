@@ -30,6 +30,10 @@ class UserPolicy
         return $currentUser->id === $user->id;
     }
 
+    /**
+      用户删除策略
+      管理员用户可以删除其它用户的个人信息；
+     */
     public function destroy(User $currentUser, User $user)
     {
         return $currentUser->is_admin && $currentUser->id !== $user->id;
